@@ -48,7 +48,9 @@ This repository contains materials related to the theory and practical applicati
 6. Prepare the dataset
   - Download text dataset from [here](https://huggingface.co/datasets/allenai/scitldr). Put it into `src/data/text`.
   - Download image dataset from [here](https://www.kaggle.com/datasets/prasunroy/nature-images). Put it into `src/data/image`.
-7. Open the Jupyter Notebook files in the `scripts/TA` folder to run the demos and experiments.
+7. Open the Jupyter Notebook files in the `scripts` folder to run the demos and experiments.
+    - For multiple ways to store text and image data into Elasticsearch, see `EW` folder.
+    - For a survey of characterstics of Elasticsearch (indexing, transactions, query processing, concurrency, and benchmarking with PostgreSQL), see `TA` folder.
 
 ## How to download dependencies via UV package manager?
 1. Install UV package manager by following the [instructions](https://docs.astral.sh/uv/getting-started/installation/).
