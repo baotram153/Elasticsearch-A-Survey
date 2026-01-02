@@ -1,0 +1,90 @@
+# Initialize a 2-node Elasticsearch cluster with a master and data node, with master node also being a data node.
+services:
+  es_master:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.2.1
+    environment:
+      discovery.type: multi-node
+      node.name: "es_master"
+      node.roles: "master,data,ingest,remote_cluster_client"
+      # node.attr.primary_indices: "true"
+      cluster.name: "es-dbms-cluster"
+      cluster.initial_master_nodes: "es_master"
+      discovery.seed_hosts: "es_data"
+      xpack.security.enabled: "false"
+      ELASTIC_PASSWORD: password
+    ports:
+      - "9200:9200"
+      # - "9300:9300"
+    volumes:
+      - es_master_data:/usr/share/elasticsearch/data
+    mem_limit: 1g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        ["CMD-SHELL", "curl -s -f http://localhost:9200/_cat/health || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  es_data:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.2.1
+    environment:
+      discovery.type: multi-node
+      node.name: "es_data"
+      node.roles: "data"
+      # node.attr.primary_indices: "false"
+      cluster.name: "es-dbms-cluster"
+      discovery.seed_hosts: "es_master"
+      xpack.security.enabled: "false"
+      ELASTIC_PASSWORD: password
+    volumes:
+      - es_data_data:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    healthcheck:
+      test:
+        ["CMD-SHELL", "curl -s -f http://localhost:9200/_cat/health || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.2.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://es_master:9200
+      ELASTICSEARCH_USERNAME: kibana_system
+      ELASTICSEARCH_PASSWORD: password
+      XPACK_SECURITY_ENABLED: false
+    depends_on:
+      es_master:
+        condition: service_healthy
+
+  postgresql:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+    ports:
+      - "35432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U username -d database"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  es_master_data:
+  es_data_data:
