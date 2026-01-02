@@ -13,9 +13,9 @@ Dr. Le Thanh VVan
 
 ---
 
-#### Bài tập lớn
+#### Assignment
 
-#### Đề tài: Tìm hiểu công cụ Elasticsearch
+#### Project name: Elasticsearch - A Survey
 
 ---
 
@@ -33,7 +33,7 @@ This repository contains materials related to the theory and practical applicati
 1. Install Docker Engine on your machine (see [this guide](https://docs.docker.com/engine/install/ubuntu/)).
 2. Clone this repository to your local machine.
     ```bash
-    git clone 
+    git clone https://github.com/baotram153/Elasticsearch-A-Survey.git
     ```
 3. Navigate to the project directory in your terminal -> cd to the `src` folder:
     ```bash
